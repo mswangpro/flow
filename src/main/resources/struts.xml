@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE struts PUBLIC
+        "-//Apache Software Foundation//DTD Struts Configuration 2.3//EN"
+        "http://struts.apache.org/dtds/struts-2.3.dtd">
+
+<struts>
+
+    <!-- develop mode -->
+    <constant name="struts.serve.static.browserCache" value="false"/>
+    <constant name="struts.devMode" value="true"/>
+    <constant name="struts.ognl.allowStaticMethodAccess" value="true"/>
+    <constant name="struts.configuration.xml.reload" value="true"/>
+
+    <constant name="struts.convention.exclude.parentClassLoader" value="true"/>
+    <constant name="struts.convention.default.parent.package" value="struts-default"/>
+    <constant name="struts.enable.DynamicMethodInvocation" value="true"/>
+    <constant name="struts.i18n.encoding" value="UTF-8"/>
+    <constant name="struts.convention.result.path" value="/WEB-INF/jsp/"/>
+    <constant name="struts.objectFactory" value="spring"/>
+    <constant name="struts.convention.action.name.separator" value="-"/>
+
+    <!-- 定义含权限检查拦截器包，供其他模块引用 -->
+	<package name="struts-default-authority" extends="struts-default">
+		<interceptors>
+			<!-- 定义权限检查拦截器 -->
+			<interceptor name="authority" class="com.mswang.learn.interceptor.AuthorityInterceptor" />
+
+			<!-- 定义含“权限检查的拦截器”的拦截器栈，注意缺省的拦截器栈“defaultStack”要放在前面 -->
+			<interceptor-stack name="mydefault">
+				<!-- 定义拦截器栈包含default-stack拦截器栈 -->
+				<interceptor-ref name="defaultStack">
+					<param name="exception.logEnabled">true</param>
+					<param name="exception.logLevel">info</param>
+				</interceptor-ref>
+				<!-- 定义拦截器栈包含authority拦截器 -->
+				<interceptor-ref name="authority" />
+			</interceptor-stack>
+		</interceptors>
+		<default-interceptor-ref name="mydefault" />
+		<global-results>
+            <result name="404">/404.jsp</result>
+            <result name="500">/500.jsp</result>
+            <result name="notFound">/index.jsp</result>
+            <result name="login">/WEB-INF/jsp/login.jsp</result>
+        </global-results>
+	</package>
+</struts>
